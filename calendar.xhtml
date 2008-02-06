@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml:html
+    xmlns="http://www.w3.org/2002/xforms"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xCal="urn:ietf:params:xml:ns:xcal"
+    >
+
+  <xhtml:head>
+    <xhtml:title>XXX-Cal</xhtml:title>
+    <xhtml:meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8"/>
+    <xhtml:meta name="version" content="$Id: calendar.xhtml,v 1.12 2006/09/20 15:47:10 vengmark Exp $"/>
+    <xhtml:meta name="author" content="$Author: vengmark $"/>
+
+    <!-- Nifty Corners Cube, by Alessandro Fulciniti, from http://www.html.it/articoli/niftycube/index.html -->
+    <xhtml:script type="text/javascript">//<![CDATA[
+function NiftyCheck(){
+if(!document.getElementById || !document.createElement)
+    return(false);
+var b=navigator.userAgent.toLowerCase();
+if(b.indexOf("msie 5")>0 && b.indexOf("opera")==-1)
+    return(false);
+return(true);
+}
+
+function Rounded(selector,bk,color,size){
+var i;
+var v=getElementsBySelector(selector);
+var l=v.length;
+for(i=0;i<l;i++){
+    AddTop(v[i],bk,color,size);
+    AddBottom(v[i],bk,color,size);
+    }
+}
+
+function RoundedTop(selector,bk,color,size){
+var i;
+var v=getElementsBySelector(selector);
+for(i=0;i<v.length;i++)
+    AddTop(v[i],bk,color,size);
+}
+
+function RoundedBottom(selector,bk,color,size){
+var i;
+var v=getElementsBySelector(selector);
+for(i=0;i<v.length;i++)
+    AddBottom(v[i],bk,color,size);
+}
+
+function AddTop(el,bk,color,size){
+var i;
+var d=document.createElement("b");
+var cn="r";
+var lim=4;
+if(size && size=="small"){ cn="rs"; lim=2}
+d.className="rtop";
+d.style.backgroundColor=bk;
+for(i=1;i<=lim;i++){
+    var x=document.createElement("b");
+    x.className=cn + i;
+    x.style.backgroundColor=color;
+    d.appendChild(x);
+    }
+el.insertBefore(d,el.firstChild);
+}
+
+function AddBottom(el,bk,color,size){
+var i;
+var d=document.createElement("b");
+var cn="r";
+var lim=4;
+if(size && size=="small"){ cn="rs"; lim=2}
+d.className="rbottom";
+d.style.backgroundColor=bk;
+for(i=lim;i>0;i--){
+    var x=document.createElement("b");
+    x.className=cn + i;
+    x.style.backgroundColor=color;
+    d.appendChild(x);
+    }
+el.appendChild(d,el.firstChild);
+}
+
+function getElementsBySelector(selector){
+var i;
+var s=[];
+var selid="";
+var selclass="";
+var tag=selector;
+var objlist=[];
+if(selector.indexOf(" ")>0){  //descendant selector like "tag#id tag"
+    s=selector.split(" ");
+    var fs=s[0].split("#");
+    if(fs.length==1) return(objlist);
+    return(document.getElementById(fs[1]).getElementsByTagName(s[1]));
+    }
+if(selector.indexOf("#")>0){ //id selector like "tag#id"
+    s=selector.split("#");
+    tag=s[0];
+    selid=s[1];
+    }
+if(selid!=""){
+    objlist.push(document.getElementById(selid));
+    return(objlist);
+    }
+if(selector.indexOf(".")>0){  //class selector like "tag.class"
+    s=selector.split(".");
+    tag=s[0];
+    selclass=s[1];
+    }
+var v=document.getElementsByTagName(tag);  // tag selector like "tag"
+if(selclass=="")
+    return(v);
+for(i=0;i<v.length;i++){
+    if(v[i].className==selclass){
+        objlist.push(v[i]);
+        }
+    }
+return(objlist);
+}
+//]]></xhtml:script>
+    <!-- Initialization script -->
+    <xhtml:script type="text/javascript">//<![CDATA[
+    window.onload=function() {
+  if(document.getElementById('slot-input-value')) {
+    document.getElementById('slot-input-value').focus();
+  } else if(document.getElementById('dcum-input-value')) {
+    document.getElementById('dcum-input-value').focus();
+  } else if(document.getElementById('equipment-slot-input-value')) {
+    document.getElementById('equipment-slot-input-value').focus();
+  }
+  if(NiftyCheck()) {
+    //RoundedTop("div#mtf_header","#FFF","#A2ED8E");
+    //RoundedBottom("div#mtf_header","#FFF","#0000FF");
+    //Rounded("div#mtf_tabs input","#C0CDF2","#E4E7F2");
+    //RoundedBottom("div#mtf_header p","#FFF","#0000FF");
+    //Rounded("div#mtf_footer","#FFF","#A2ED8E");
+    //RoundedTop("ul#nav li","transparent","#FFC");
+    //RoundedTop("div.gradient","#C0CDF2","#B8B8B8");
+    //RoundedBottom("div.gradient","#C0CDF2","#ECECF2");
+  }
+}
+//]]></xhtml:script>
+
+    <!-- Nifty Corners Cube default style, from http://www.html.it/articoli/niftycube/index.html -->
+    <xhtml:style type="text/css"><![CDATA[
+.rtop,.rbottom{display:block}
+.rtop *,.rbottom *{display:block;height: 1px;overflow: hidden}
+.r1{margin: 0 5px}
+.r2{margin: 0 3px}
+.r3{margin: 0 2px}
+.r4{margin: 0 1px;height: 2px}
+
+.rs1{margin: 0 2px}
+.rs2{margin: 0 1px}
+]]></xhtml:style>
+    <!-- Nifty Corners Cube print style, from http://www.html.it/articoli/niftycube/index.html -->
+    <xhtml:style type="text/css" media="print"><![CDATA[
+.rtop,.rbottom{display: none}
+]]></xhtml:style>
+    <!-- My own styles -->
+    <xhtml:style type="text/css"><![CDATA[
+/*************************************************************/
+/* GENERAL
+/*************************************************************/
+
+* {
+  font-size: x-large;
+  }
+
+body {
+  background-color: #FFF;
+  color: #000;
+  }
+
+
+/*************************************************************/
+/* INPUT
+/*************************************************************/
+/* Hover color */
+input .xf-value:hover {
+  background-color: #EEA;
+  }
+
+/* Active color */
+input .xf-value:active {
+  }
+
+/* Focus color */
+input .xf-value:focus {
+  background-color: #FFFF66;
+  }
+
+/* The select is handled specially */
+select:hover {
+  background-color: #99CCFF;
+  }
+
+/* When the selection list is expanded */
+select:hover:focus {
+  background-color: #FFF
+  }
+
+select:focus {
+  background-color: #FFFF66;
+  }
+
+
+/*************************************************************/
+/* OUTPUT
+/*************************************************************/
+repeat {
+  display: block;
+  border: 1px dotted blue;
+  }
+
+.xf-repeat-item {
+  display: block;
+  border: 1px solid red;
+  }
+
+.xf-repeat-item output, .xf-repeat-item input {
+  display: block;
+  }
+
+.xf-repeat-item label {
+  float: left;
+  width: 12ex;
+  }
+
+
+/*************************************************************/
+/* INPUT
+/*************************************************************/
+input .xf-value {
+  margin-left: 11ex;
+  }
+
+
+/*************************************************************/
+/* LABELS
+/*************************************************************/
+.input label, .select1 label {
+  margin-right: 0.25ex;
+  float: left;
+  width: 11ex;
+  }
+
+
+/*************************************************************/
+/* HIDE SOME STUFF
+/*************************************************************/
+#test {
+  display: none;
+  }
+]]></xhtml:style>
+
+    <model id="xxx-cal">
+
+      <!-- Settings -->
+      <instance id="settings">
+        <settings xmlns="">
+          <language-instance>lang_no</language-instance>
+          <events>
+            <display>
+              <max>100</max>
+              <earliest>2005-01-01T00:00:00</earliest>
+              <latest></latest>
+            </display>
+            <confirm>
+              <edit>false()</edit>
+              <delete>true()</delete>
+            </confirm>
+            <show>
+              <edit>true()</edit>
+              <delete>true()</delete>
+            </show>
+            <backup>
+              <edit>false()</edit>
+              <delete>false()</delete>
+            </backup>
+          </events>
+          <calendars>
+            <display>
+              <max>5</max>
+            </display>
+            <confirm>
+              <delete>true()</delete>
+            </confirm>
+            <show>
+              <delete>true()</delete>
+            </show>
+            <backup>
+              <delete>false()</delete>
+            </backup>
+          </calendars>
+        </settings> 
+      </instance>
+
+      <!-- Available languages -->
+      <instance id="languages">
+        <languages xmlns="">
+          <language>
+            <name>Norwegian</name>
+            <instance>lang_no</instance>
+          </language>
+          <language>
+            <name>English</name>
+            <instance>lang_en</instance>
+          </language>
+        </languages>
+      </instance>
+
+      <!-- Text in different languages -->
+      <instance id="lang_default">
+        <strings xmlns="">
+          <titles>
+            <calendar></calendar>
+          </titles>
+          <labels>
+            <uid></uid>
+            <summary></summary>
+            <start></start>
+            <end></end>
+            <description></description>
+            <url></url>
+            <edit-event></edit-event>
+            <delete-event></delete-event>
+            <add-calendar></add-calendar>
+            <delete-calendar></delete-calendar>
+            <time></time>
+          </labels>
+          <alerts>
+            <negative-daterange></negative-daterange>
+          </alerts>
+        </strings> 
+      </instance>
+
+      <instance id="lang_en">
+        <strings xmlns="">
+          <titles>
+            <calendar>Calendar</calendar>
+          </titles>
+          <labels>
+            <uid>ID</uid>
+            <summary>Summary</summary>
+            <start>Start</start>
+            <end>End</end>
+            <description>Description</description>
+            <url>Link</url>
+            <edit-event>Edit</edit-event>
+            <delete-event>Delete</delete-event>
+            <add-calendar>Add Calendar</add-calendar>
+            <delete-calendar>Delete Calendar</delete-calendar>
+            <time>Time</time>
+          </labels>
+          <alerts>
+            <negative-daterange>End date must be &lt;= start date.</negative-daterange>
+          </alerts>
+        </strings> 
+      </instance>
+
+      <instance id="lang_no">
+        <strings xmlns="">
+          <titles>
+            <calendar>Kalender</calendar>
+          </titles>
+          <labels>
+            <uid>ID</uid>
+            <summary>Summary</summary>
+            <start>Start</start>
+            <end>End</end>
+            <description>Description</description>
+            <url>Link</url>
+            <edit-event>Edit</edit-event>
+            <delete-event>Delete</delete-event>
+            <add-calendar>Add Calendar</add-calendar>
+            <delete-calendar>Delete Calendar</delete-calendar>
+            <time>Time</time>
+          </labels>
+          <alerts>
+            <negative-daterange>End date must be &lt;= start date.</negative-daterange>
+          </alerts>
+        </strings> 
+      </instance>
+
+      <!-- Context -->
+      <instance id="context">
+        <context xmlns="">
+          <vcalendar>Arbeid</vcalendar>
+        </context> 
+      </instance>
+
+      <bind id="context-vcalendar-bind" nodeset="instance('context')/vcalendar"/>
+
+      <!-- Calendar / event backup, to enable restore / undo -->
+      <instance id="backup">
+        <iCalendar xmlns="">
+        </iCalendar> 
+      </instance>
+
+      <!-- Calendar and bindings -->
+      <instance id="calendars">
+        <iCalendar xmlns="">
+          <vcalendar id="Personlig">
+            <vevent>
+              <uid>engmark-2006-09-14-1@calendar.l0b0.net</uid>
+              <summary>Pappa kommer</summary>
+              <dtstart>2006-09-20T21:50:00+01:00</dtstart>
+              <dtend>2006-09-20T21:50:00+01:00</dtend>
+              <description>KLM KL1937 via Amsterdam. Blir en uke.</description>
+              <url>http://www.gva.ch/en/Desktopdefault.aspx/tabid-33/</url>
+            </vevent>
+            <vevent>
+              <uid></uid>
+              <summary></summary>
+              <dtstart></dtstart>
+              <dtend></dtend>
+              <description></description>
+              <url></url>
+            </vevent>
+          </vcalendar>
+          <vcalendar id="Arbeid">
+            <vevent>
+              <uid>engmark-2006-09-14-2@calendar.l0b0.net</uid>
+              <summary>Møte med Olivier Dugenet på <abbr title="Cambridge Technology Partners">CTP</abbr></summary>
+              <dtstart>2006-09-15T16:00:00+01:00</dtstart>
+              <dtend>2006-09-15T17:00:00+01:00</dtend>
+              <description>Beskrivelse + kart på Gmail</description>
+              <url>http://www.ctp.com/</url>
+            </vevent>
+            <vevent>
+              <uid>engmark-2006-09-18-1@calendar.l0b0.net</uid>
+              <summary><a href="http://jobs.joelonsoftware.com/default.asp?143" title="Stillingsbeskrivelse">Telefonintervju</a> med Jaap de Heer, <a href="http://www.streamtech.nl/">Streamtech</a></summary>
+              <dtstart>2006-09-19T16:00:00+01:00</dtstart>
+              <dtend>2006-09-19T16:30:00+01:00</dtend>
+              <description></description>
+              <url>http://jobs.joelonsoftware.com/default.asp?143</url>
+            </vevent>
+            <vevent>
+              <uid>engmark-2006-09-19-1@calendar.l0b0.net</uid>
+              <summary>Teknisk <a href="http://www.jobup.ch/JobView.asp?GT=parent&amp;L=F&amp;PID=212104" title="Stillingsbeskrivelse">intervju</a> med Olivier Dugenet, <abbr title="Cambridge Technology Partners">CTP</abbr></summary>
+              <dtstart>2006-09-19T17:00:00+01:00</dtstart>
+              <dtend>2006-09-19T18:00:00+01:00</dtend>
+              <description></description>
+              <url>http://www.jobup.ch/JobView.asp?GT=parent&amp;L=F&amp;PID=212104</url>
+            </vevent>
+            <vevent>
+              <uid></uid>
+              <summary></summary>
+              <dtstart></dtstart>
+              <dtend></dtend>
+              <description></description>
+              <url></url>
+            </vevent>
+          </vcalendar>
+          <vcalendar id="">
+            <vevent>
+              <uid></uid>
+              <summary></summary>
+              <dtstart></dtstart>
+              <dtend></dtend>
+              <description></description>
+              <url></url>
+            </vevent>
+          </vcalendar>
+        </iCalendar> 
+      </instance>
+
+      <bind id="calendars-instance-bind" nodeset="instance('calendars')"/>
+      <bind id="vcalendar-bind" nodeset="instance('calendars')/vcalendar"/>
+      <bind id="current-vcalendar-bind" nodeset="instance('calendars')/vcalendar[@id = instance('context')/vcalendar]"/>
+      <bind id="event-bind" nodeset="instance('calendars')/vcalendar/vevent[position() != last()]"/>
+      <bind id="dummy-event-bind" nodeset="instance('calendars')/vcalendar/vevent[last()]"/>
+
+      <!-- Submissions and actions -->
+      <submission
+          id="save-new-event"
+          bind="calendars-instance-bind"
+          method="post"
+          replace="none"
+          indent="true()"
+          />
+<!-- Set context <new> to the last index. Style with yellow fade-out -->
+<!-- Add a new event template to the end of the instance -->
+
+      <submission
+          id="delete-event"
+          bind="calendars-instance-bind"
+          method="post"
+          replace="all"
+          indent="true()"
+          />
+<!-- Remove the context event -->
+
+      <submission
+          id="delete-calendar"
+          bind="calendars-instance-bind"
+          method="post"
+          replace="all"
+          indent="true()"
+          />
+<!-- Remove the context calendar -->
+
+      <!-- Set language according to settings -->
+      <submission
+          id="set-language"
+          ref="instance('settings')/language-instance"
+          action="file://."
+          validate="false"
+          method="get"
+          replace="instance"
+          instance="lang_default"
+          />
+  
+      <action ev:event="xforms-ready">
+        <send submission="set-language"/>
+      </action>
+
+    </model>
+  </xhtml:head>
+
+  <xhtml:body>
+
+    <xhtml:div id="calendar_body">
+      <!-- Debugging -->
+      <!-- End debugging -->
+
+      <!-- One tab per calendar, with the name in the tab button. Tab menu on the left or top? -->
+      <repeat id="calendar-repeat" bind="vcalendar-bind" appearance="compact">
+        <trigger>
+          <label ref="@id"/>
+          <action ev:event="DOMActivate">
+            <setvalue bind="context-vcalendar-bind" value="@id"/>
+            <rebuild/>
+          </action>
+        </trigger>
+      </repeat> <!-- Calendar tabs -->
+
+      <!-- Show only one calendar at a time -->
+      <group id="calendar-group" bind="current-vcalendar-bind" appearance="compact">
+        <switch> <!-- Display or delete calendar -->
+          <case id="display_calendar">
+
+            <repeat id="event-repeat" bind="event-bind" appearance="compact">
+              <switch> <!-- Display or edit event -->
+                <case id="display_event">
+                  <!-- Calendar contents -->
+                  <output ref="uid">
+                    <label ref="instance('lang_default')/labels/uid"/>
+                  </output>
+                  <output ref="summary">
+                    <label>Summary</label>
+                  </output>
+                  <output ref="dtstart">
+                    <label>Start</label>
+                  </output>
+                  <output ref="dtend">
+                    <label>End</label>
+                  </output>
+                  <output ref="description">
+                    <label>Description</label>
+                  </output>
+                  <output ref="url">
+                    <label>URL</label>
+                  </output>
+    
+                  <!-- Event actions -->
+                  <trigger>
+                    <label>Edit</label>
+                    <action ev:event="DOMActivate">
+                      <toggle case="edit_event"/>
+                    </action>
+                  </trigger>
+                  <trigger>
+                    <label>Delete</label>
+                    <action ev:event="DOMActivate">
+                      <toggle case="warning_delete_event"/>
+                    </action>
+                  </trigger>
+                </case>
+                
+                <case id="edit_event">
+                  <input ref="uid">
+                    <label>UID</label>
+                  </input>
+                  <input ref="summary">
+                    <label>Summary</label>
+                  </input>
+                  <input ref="dtstart">
+                    <label>Start</label>
+                  </input>
+                  <input ref="dtend">
+                    <label>End</label>
+                  </input>
+                  <input ref="description">
+                    <label>Description</label>
+                  </input>
+                  <input ref="url">
+                    <label>URL</label>
+                  </input>
+    
+                  <!-- Event edit actions -->
+                  <trigger>
+                    <label>Cancel</label>
+                    <action ev:event="DOMActivate">
+                      <toggle case="display_event"/>
+                    </action>
+                  </trigger>
+                  <trigger>
+                    <label>Save</label>
+                    <action ev:event="DOMActivate">
+                    </action>
+                  </trigger>
+                </case>
+              </switch>
+            </repeat> <!-- Events -->
+    
+            <!-- Calendar actions -->
+            <trigger>
+              <label>Add calendar</label>
+              <action ev:event="DOMActivate">
+                <insert bind="instance('calendars')/vcalendar" at="last()" position="after"/>
+                <!-- Save & reload -->
+              </action>
+            </trigger>
+    
+            <trigger ref="instance('settings')/calendars/show/delete">
+              <!-- Set @relevant according to settings -->
+              <label>Delete calendar</label>
+              <action ev:event="DOMActivate">
+                <toggle case="warning_delete_calendar"/>
+              </action>
+            </trigger>
+          </case>
+          <case id="warning_delete_calendar">
+            <xhtml:p>Are you sure you want to delete this calendar?</xhtml:p>
+            <trigger>
+              <label>Cancel</label>
+              <action ev:event="DOMActivate">
+                <toggle case="display_calendar"/>
+              </action>
+            </trigger>
+            <trigger>
+              <label>Cancel &amp; hide calendar delete button</label>
+              <action ev:event="DOMActivate">
+                <setvalue ref="instance('settings')/calendars/show/delete" value="false()"/>
+                <toggle case="display_calendar"/>
+              </action>
+            </trigger>
+            <trigger>
+              <label>Delete</label>
+              <action ev:event="DOMActivate">
+                <delete bind="" at=""/>
+                <toggle case="display_calendar"/>
+              </action>
+            </trigger>
+          </case>
+        </switch>
+      </group> <!-- Calendar -->
+
+      <!-- Upload button to send calendar online -->
+      <!-- Settings button (switch/case) -->
+
+    </xhtml:div>
+
+    <xhtml:div id="footer">
+      <output value="now()">
+        <label>Time</label>
+      </output>
+    </xhtml:div>
+
+  </xhtml:body>
+</xhtml:html>
